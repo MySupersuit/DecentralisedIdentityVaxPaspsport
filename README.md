@@ -1,4 +1,17 @@
-# Focked by kctam for a demonstration
+# A COVID-19 Vaccine Passport
+The folder `midController` is where my 4 controllers reside
+
+The top level folder holds all the agent files
+
+The folder `von-network` holds the Ledger provided by the Verifiable Organisations Network
+
+# Instructions
+
+
+
+
+
+# Forked by kctam for a demonstration
 This is the forked version of Hyperledger Aries Cloud Agent - Python. This is for the demonstration in this [article](https://medium.com/@kctheservant/demonstration-of-hyperledger-aries-cloud-agent-6e476a5426b0?). Several demo files are modified. Please refer that article for the demo.
 
 
