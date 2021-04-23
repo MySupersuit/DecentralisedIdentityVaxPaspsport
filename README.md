@@ -22,7 +22,7 @@ More info can be found in the von-network README. http://localhost:9000 also sho
 ## 2. Start the agents
 With the von-network running (it must have finished setup, otherwise the agents won't be able to find the ledger) head to `/demo`  and start an agent for each actor with 
 ```
-/run_demo alice
+./run_demo alice
 ./run_demo bob
 ./run_demo hse
 ./run_demo aer_lingus
@@ -31,17 +31,10 @@ With the von-network running (it must have finished setup, otherwise the agents 
 This then fires up the agents' initialisation protocols. Checking http://localhost:9000 after this shows the DIDs and Credential Defintions that have been written to the ledger.
 
 ## 3. Open the Controller web app
-In `/midController/public` open `main.html` and proceed from there 
+In `/midController/public` open `main.html` and proceed from there. This web app is ostensibly 4 controllers in one web page for convenience. In a practical scenario these 4 controllers would be used by each actor seperately.
 
-
-
-
-
-
-
-# Forked by kctam for a demonstration
-This is the forked version of Hyperledger Aries Cloud Agent - Python. This is for the demonstration in this [article](https://medium.com/@kctheservant/demonstration-of-hyperledger-aries-cloud-agent-6e476a5426b0?). Several demo files are modified. Please refer that article for the demo.
-
+# Walkthrough of web app
+...
 
 # Original Readme: Hyperledger Aries Cloud Agent - Python  <!-- omit in toc -->
 
