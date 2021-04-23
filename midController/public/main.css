@@ -1,0 +1,371 @@
+.column {
+    float: left;
+    width: 33.33%;
+    /* max-height: 100%; */
+    height: 100vh;
+    overflow: auto;
+    overflow-y: overlay;
+    box-sizing: border-box;
+    padding: 0.4em;
+}
+
+hr.rounded {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 2px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+    border-radius: 5px;
+}
+
+html, body {
+    overflow: hidden;
+    margin: 0;
+    height: 100%;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+#aliceConfirmation {
+    display: none;
+}
+
+#bobConfirmation {
+    display: none;
+}
+
+h1 {
+    text-align: center;
+    margin: 0px;
+}
+
+.colrow {
+    height: 100vh;
+}
+
+.row {
+    /* display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%; */
+    min-height: 45vh;
+}
+
+.v-select {
+    max-width: 15em;
+    font-size: 12px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header img {
+    /* float: left; */
+    height: 40px;
+    width: auto;
+    /* display: inline; */
+    /* top: 100px; */
+}
+
+.profileHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profileHeader img {
+    height: 40px;
+    width: auto;
+    float: left;
+    /* margin-left: 38%; */
+    /* transform: translateX(-50%); */
+}
+
+#hseName {
+    max-width: 95%;
+}
+
+#ALcanvas {
+    display: none;
+}
+
+#HSEcanvas {
+    display: none;
+}
+
+#HSEinviteView {
+    display: inline;
+}
+
+#ALinviteView {
+    display: inline;
+}
+
+.headerImage {
+    padding: 0 0 0 20px;
+}
+
+.profileImage {
+    padding: 0 20px 0 0;
+}
+
+.collapsible {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 13px;
+    width: 100% !important;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+}
+
+.active, .collapsible:hover {
+    background-color: #ccc;
+}
+
+.collapsibleContent {
+    /* padding: 0 18px; */
+    display: none;
+    overflow: hidden;
+    background-color: #f1f1f1;
+}
+
+.collapsibleTextArea {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 95%;
+    border: none;
+    font-size: 10px;
+    background-color: rgb(248, 247, 247);
+}
+
+.statusUpdates {
+    color: crimson;
+    font-size: 80%;
+}
+
+ul {
+    list-style-position: outside;
+    padding: 0;
+    list-style-type: none;
+}
+
+#loadStatus {
+    font-style: italic;
+    font-size: 80%;
+}
+
+h4 {
+    margin-bottom: 1vw;
+}
+
+.walletText {
+    font-size: 80%;
+}
+
+/* Modal Styling */
+
+.modal-mask {
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: table;
+    transition: opacity 0.3s ease;
+}
+
+.modal-wrapper {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.modal-container {
+    width: 300px;
+    margin: 0px auto;
+    padding: 20px 30px;
+    background-color: #fff;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+    transition: all 0.3s ease;
+    font-family: Helvetica, Arial, sans-serif;
+    overflow:visible;
+}
+
+.modal-header h3 {
+    margin-top: 0;
+    color: #42b983;
+}
+
+.modal-body {
+    margin: 20px 0;
+}
+
+.modal-default-button {
+    float: right;
+}
+
+.modal-enter {
+    opacity: 0;
+}
+
+.modal-leave-active {
+    opacity: 0;
+}
+
+.modal-enter .modal-container, .modal-leave-active .modal-container {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+.list-group-item {
+    display: block;
+    text-decoration: none;
+    margin: 1em 0.2em;
+    color: #4a4a4a;
+  }
+  
+  .list-group-item:hover {
+    color: red;
+  }
+  
+  .highlight {
+    color: blue;
+  }
+
+/* Tooltip Styling adapated from w3schools */
+
+/* .tooltiptop .tooltipright .tooltipbtm {
+    position: relative;
+    display: inline;
+} */
+
+.tooltip {
+    position: relative;
+    display: inline;
+}
+
+/* Tooltip text */
+
+/* .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 150px;
+    width: 90%;
+    max-width: 20vw;
+    background-color: black;
+    font-size: 80%;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    Position the tooltip text - see examples below!
+    position: absolute;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.5s;
+} */
+
+.tooltipright .tooltiptextright {
+    visibility: hidden;
+    width: 150px;
+    /* width: 90%; */
+    /* max-width: 20vw; */
+    background-color: black;
+    font-size: 80%;
+    color: #fff;
+    text-align: center;
+    padding: 5px 5px;
+    border-radius: 6px;
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.5s;
+    top: -5px;
+    left: 105%;
+}
+
+.tooltipbtm .tooltiptextbtm {
+    visibility: hidden;
+    width: 150px;
+    /* width: 90%; */
+    /* max-width: 20vw; */
+    background-color: black;
+    font-size: 80%;
+    color: #fff;
+    text-align: center;
+    padding: 5px 5px;
+    border-radius: 6px;
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.5s;
+    top: 185%;
+    left: 50%;
+    margin-left: -75px;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 0.8;
+}
+
+.tooltiptop:hover .tooltiptexttop .tooltipright:hover .tooltiptextright .tooltipbtm:hover .tooltiptextbtm {
+    visibility: visible;
+    opacity: 0.8;
+}
+
+.tooltiptop .tooltiptexttop {
+    visibility: hidden;
+    width: 150px;
+    /* width: 90%; */
+    /* max-width: 20vw; */
+    background-color: black;
+    font-size: 80%;
+    color: #fff;
+    text-align: center;
+    padding: 5px 5px;
+    border-radius: 6px;
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.5s;
+    bottom: 175%;
+    left: 50%;
+    margin-left: -75px;
+}
+
+.tooltipable {
+    border-bottom: 2px dotted;
+}
+
+::-webkit-scrollbar {
+    width: 20px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #d6dee1;
+    border-radius: 20px;
+    border: 6px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #a8bbbf;
+}

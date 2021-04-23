@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-js-modal@2.0.0-rc.6/dist/index.min.js"></script>
+    <script src="../node_modules/qrcode/build/qrcode.min.js"></script>
+    <!-- <script src="https://unpkg.com/vue-select@latest"></script> -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css"> -->
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://unpkg.com/vue-js-modal@latest/dist/styles.css">
+
+    <script type="text/x-template" id="modal-template">
+        <transition name="modal">
+          <div class="modal-mask">
+            <div class="modal-wrapper">
+              <div class="modal-container">
+  
+                <div class="modal-header">
+                    <button class="modal-default-button" @click="$emit('close')">
+                        Close
+                      </button>
+                  <slot name="header">
+                    default header
+                  </slot>
+                </div>
+  
+                <div class="modal-body">
+                  <slot name="body">
+                    default body
+                  </slot>
+                </div>
+  
+                <div class="modal-footer">
+                  <slot name="footer">
+                    Wallet Contents
+                  </slot>
+                </div>
+              </div>
+            </div>
+          </div>
+        </transition>
+      </script>
+
+    <script type="text/x-template" id="loading-modal-template">
+        <transition name="modal">
+          <div class="modal-mask">
+            <div class="modal-wrapper">
+              <div class="modal-container">
+  
+                <div class="modal-header">
+                  <slot name="header">
+                    default header
+                  </slot>
+                </div>
+  
+                <div class="modal-body">
+                  <slot name="body">
+                    default body
+                  </slot>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </transition>
+      </script>
+</head>
+
+<body>
+    <div id="app">
+        <div id="initLoadDiv">
+            <!-- <button id="show-modal" v-on:click="ShowAliceModal">View Wallet</button> -->
+            <loading-modal v-if="showLoadModal" @close="showLoadModal = false">
+                <h3 slot="header">Getting everything set up...</h3>
+                <span slot="body">
+                    <span id="loadStatus">Errors may appear here...</span>
+                    <ul id="loadingErrs">
+                        <li v-for="item in loadingModalStatus">
+                            {{item}}
+                        </li>
+                        <button v-if="!initLoading" class="modal-default-button"
+                            @click="showLoadModal=false">Close</button>
+                    </ul>
+
+                </span>
+        </div>
+        <div class="colrow">
+            <div class="column">
+                <div class="header">
+                    <h1>HSE</h1>
+                    <img class="headerImage" src="../media/hse_logo.png">
+                </div>
+                <hr class="rounded">
+                <div id="HSEinviteDiv">
+                    <div class="tooltip tooltipright">
+                        <!-- <div class="tooltipright"> -->
+                        <span class="tooltiptext tooltiptextright">
+                            <!-- <span class="tooltiptextright"> -->
+                            Generate an open invite which can be accepted by
+                            anyone with the
+                            link
+                        </span>
+                        <button v-on:click="HSEInviteButton"><span class="tooltipable">Generate Invite</span></button>
+                        <button v-on:click="HSEGenerateQR">QR Code</button>
+                    </div>
+                    <span class="statusUpdates">{{hseInviteStatus}}</span>
+                    <br><br>
+                    <div id="HSEinviteView" class="tooltip tooltiptop">
+                        <span class="tooltiptext tooltiptexttop">View the generated invitation</span>
+                        <button type="button" class="collapsible"><span class="tooltipable">View
+                                Invitation</span></button>
+                        <div class="collapsibleContent">
+                            <textarea readonly class="collapsibleTextArea" rows="11"
+                                cols="64">{{hseInviteText}}</textarea>
+                        </div>
+                    </div>
+                    <canvas id="HSEcanvas"></canvas>
+                    
+                </div>
+                <hr class="rounded">
+                <div id="credIssueDiv">
+                    <h4>Issue a Credential</h4>
+                    <p>
+                        Connection:
+                        <select name="userSelect" v-model="cred_issue_conn_id">
+                            <option disabled value="" selected="selected">Connected agents...</option>
+                            <option v-for="option in hse_conn_options" v-bind:value="option.name">
+                                {{option.name}}
+                            </option>
+                        </select>
+
+                    </p>
+                    <p>
+                        Full Name:
+                        <input v-model="cred_issue_fullname">
+                    </p>
+
+                    <p>
+                        Vaccination Date:
+                        <input id="cred_date" type="date" v-model="cred_issue_date">
+                    </p>
+                    <p>
+                        Vaccination Centre:
+                        <input v-model="cred_issue_centre">
+                    </p>
+                    <p>
+                        Vaccination Type:
+                        <!-- <v-select v-model="cred_issue_type_drop" :options="vaccine_options" id="type_dropdown"></v-select> -->
+                        <select v-model="cred_issue_type_drop">
+                            <option v-for="option in vaccine_options" v-bind:value="option">
+                                {{option}}
+                            </option>
+                        </select>
+                    </p>
+                    <p>
+                        Dose:
+                        <!-- <v-select v-model="cred_issue_dose_drop" :options="dose_options" id="dose_dropdown"></v-select> -->
+                        <select v-model="cred_issue_dose_drop">
+                            <option v-for="option in dose_options" v-bind:value="option">
+                                {{option}}
+                            </option>
+                        </select>
+                    </p>
+                    <!-- Name can be a dropdown populated by connected people -->
+                    <div class="tooltip tooltipright">
+                        <span class="tooltiptext tooltiptextright">Issue a credential with the above info to the
+                            selected connected entity</span>
+                        <button v-on:click="HSEIssueCredButton"><span class="tooltipable">Issue
+                                Credential</span></button>
+                    </div>
+                    <span class="statusUpdates">{{hseIssueStatus}}</span>
+                    <br><br>
+
+                    <div class="tooltip tooltipbtm">
+                        <span class="tooltiptext tooltiptextbtm">View the issued credential</span>
+                        <button type="button" class="collapsible"><span class="tooltipable">View
+                                Credential</span></button>
+                        <div class="collapsibleContent">
+                            <textarea readonly class="collapsibleTextArea" rows="20"
+                                cols="64">{{hseCredIssueText}}</textarea>
+                        </div>
+                    </div>
+                    <hr class="rounded">
+                    <div id="HSERevoke">
+                        <div class="tooltip tooltipright">
+                            <span class="tooltiptext tooltiptextright">Revoke issued credentials</span>
+                            <button id="show-modal" v-on:click="ShowHSERevokeModal"><span class="tooltipable">Revoke</span></button>
+                        </div>
+                        <modal v-if="revokeModalShown" @close="CloseRevokeModal">
+                            <h3 slot="header">Revoke Credentials</h3>
+                            <span slot="body">
+                                <h4>Issued Credentials</h4>
+                                <div class="list-group">
+                                    <a href="#"
+                                    class="list-group-item list-group-item-action"
+                                    @click="SelectCred(c)"
+                                    v-for="c in hseIssuedCreds">
+                                        {{c.cred}}
+                                </a>
+                                <span class="statusUpdates">{{revokeUpdate}}</span>
+                                </div>
+                            </span>
+                            <span slot="footer">
+                                
+                            </span>
+                        </modal>
+                    </div>
+                    <div id="HSEWalletDiv">
+                        <br>
+                        <div class="tooltip tooltipright">
+                            <span class="tooltiptext tooltiptextright">View the DIDs, Connections and Credentials in a
+                                user's wallet</span>
+                            <button id="show-modal" v-on:click="ShowHSEModalBtn"><span class="tooltipable">View
+                                    Wallet</span></button>
+                        </div>
+                        <modal v-if="showHSEModal" @close="CloseHSEModal">
+                            <h3 slot="header">HSE's Wallet</h3>
+                            <span slot="body">
+                                <h4>Public NYMs</h4>
+                                <ul class="walletText" id="hseDIDs">
+                                    <li v-for="did in hseDIDs">{{did}}</li>
+                                </ul>
+                                <h4>Connections</h4>
+                                <ul class="walletText" id=hseConns>
+                                    <li v-for="conn in hseConns">{{conn}}</li>
+                                </ul>
+                                <button type="button" class="collapsible"
+                                    v-on:click="HSEWalletCredClick">Credentials</button>
+                                <div id="hseWalletCollapse" class="collapsibleContent">
+                                    <textarea readonly class="collapsibleTextArea" rows="11"
+                                        cols="64">{{hseCredentialsText}}</textarea>
+                                </div>
+                            </span>
+                        </modal>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="column">
+                <div class="row">
+                    <div class="profileHeader">
+                        <img class="profileImage" src="../media/female_avatar1.jpg">
+                        <h1>Alice</h1>
+                    </div>
+                    <hr class="rounded">
+                    <div id="aliceInvitationDiv">
+                        <div class="tooltip tooltipright">
+                            <span class="tooltiptext tooltiptextright">Load an invite generated by either the HSE or Aer
+                                Lingus</span>
+                            <button v-on:click="AliceLoadInv"><span class="tooltipable">Load Invite</span></button>
+                        </div>
+                        <input v-model="aliceRadioFrom" type="radio" id="aliceHSERadio" value="HSE" checked="checked">
+                        <label for="aliceHSERadio">HSE</label>
+
+                        <input v-model="aliceRadioFrom" type="radio" id="aliceALRadio" value="AL">
+                        <label for="aliceALRadio">Aer Lingus</label>
+                        <br><br>
+                        <div id="aliceInviteView" class="tooltip tooltipbtm">
+                            <span class="tooltiptext tooltiptextbtm">View and accept the loaded invitation</span>
+                            <button type="button" class="collapsible"><span class="tooltipable">View
+                                    Invitation</span></button>
+
+                            <div class="collapsibleContent">
+                                <textarea readonly class="collapsibleTextArea" rows="11"
+                                    cols="64">{{aliceInviteText}}</textarea>
+                                <button v-on:click="AliceAcceptInvite">Accept Invite</button>
+                                <span class="statusUpdates">{{aliceAcceptInvStatus}}</span>
+                            </div>
+                        </div>
+                        <!-- <canvas id="aliceCanvas"></canvas> -->
+                    </div>
+                    <br>
+                    <div id="aliceConfirmation">
+                        <span class="statusUpdates">{{aliceConfirmQuery}}</span><br>
+                        <button type="button" class="collapsible">
+                            More Information
+                        </button>
+
+                        <div class="collapsibleContent">
+                            <textarea readonly class="collapsibleTextArea" rows="11"
+                                cols="64">{{aliceMoreInfo}}</textarea>
+                        </div>
+                        <button v-on:click="AliceConfirm">Accept</button>
+                        <button v-on:click="AliceReject">Reject</button>
+                        <br>
+                    </div>
+                    <br><br>
+                    <div id="aliceWalletDiv">
+                        <div class="tooltip tooltipright">
+                            <span class="tooltiptext tooltiptextright">View the DIDs, Connections and Credentials in a
+                                user's wallet</span>
+                            <button id="show-modal" v-on:click="ShowAliceModal"><span class="tooltipable">View
+                                    Wallet</span></button>
+                        </div>
+                        <modal v-if="showAliceModal" @close="CloseAliceModal">
+                            <h3 slot="header">Alice's Wallet</h3>
+                            <span slot="body">
+                                <h4>Public NYMs</h4>
+                                <ul class="walletText" id="aliceDIDs">
+                                    <li v-for="did in aliceDIDs">{{did}}</li>
+                                </ul>
+                                <h4>Connections</h4>
+                                <ul class="walletText" id=aliceConns>
+                                    <li v-for="conn in aliceConns">{{conn}}</li>
+                                </ul>
+                                <button type="button" class="collapsible"
+                                    v-on:click="AliceWalletCredClick">Credentials</button>
+                                <div id="aliceWalletCollapse" class="collapsibleContent">
+                                    <textarea readonly class="collapsibleTextArea" rows="11"
+                                        cols="64">{{aliceCredentialsText}}</textarea>
+                                </div>
+                                <!-- <ul class="walletText" id="aliceCreds">
+                                    <li v-for="cred in aliceCreds">{{cred}}</li>
+                                </ul> -->
+                            </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="profileHeader">
+                        <img class="profileImage" src="../media/male_avatar1.jpg">
+                        <h1>Bob</h1>
+                    </div>
+                    <hr class="rounded">
+                    <div id="bobInvitationDiv">
+                        <div class="tooltip tooltipright">
+                            <span class="tooltiptext tooltiptextright">View and accept the loaded invitation</span>
+                            <button v-on:click="BobLoadInv"><span class="tooltipable">Load Invite</span></button>
+                        </div>
+                        <input v-model="bobRadioFrom" type="radio" name="bobInvFrom" id="bobHSERadio" value="HSE"
+                            checked="checked">
+                        <label for="bobHSERadio">HSE</label>
+
+                        <input v-model="bobRadioFrom" type="radio" name="bobInvFrom" id="bobALRadio" value="AL">
+                        <label for="bobALRadio">Aer Lingus</label>
+
+                        <br><br>
+                        <div class="tooltip tooltipbtm">
+                            <span class="tooltiptext tooltiptextbtm">View and accept the loaded invitation</span>
+                            <button type="button" class="collapsible"><span class="tooltipable">View
+                                    Invitation</span></button>
+
+                            <div class="collapsibleContent">
+                                <textarea readonly class="collapsibleTextArea" rows="11"
+                                    cols="64">{{bobInviteText}}</textarea>
+                                <button v-on:click="BobAcceptInvite">Accept Invite</button>
+                                <span class="statusUpdates">{{bobAcceptInvStatus}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div id="bobConfirmation">
+                        <span class="statusUpdates">{{bobConfirmQuery}}</span><br>
+                        <button type="button" class="collapsible">
+                            More Information
+                        </button>
+
+                        <div class="collapsibleContent">
+                            <textarea readonly class="collapsibleTextArea" rows="11"
+                                cols="64">{{bobMoreInfo}}</textarea>
+                        </div>
+                        <button v-on:click="BobConfirm">Accept</button>
+                        <button v-on:click="BobReject">Reject</button>
+                        <br>
+                    </div>
+                    <br><br>
+                    <div id="bobWalletDiv">
+                        <div class="tooltip tooltipright">
+                            <span class="tooltiptext tooltiptextright">View the DIDs, Connections and Credentials in a
+                                user's wallet</span>
+                            <button id="show-modal" v-on:click="ShowBobModal"><span class="tooltipable">View
+                                    Wallet</span></button>
+                        </div>
+                        <modal v-if="showBobModal" @close="CloseBobModal">
+                            <h3 slot="header">Bob's Wallet</h3>
+                            <span slot="body">
+                                <h4>Public NYMs</h4>
+                                <ul class="walletText" id="bobDIDs">
+                                    <li v-for="did in bobDIDs">{{did}}</li>
+                                </ul>
+                                <h4>Connections</h4>
+                                <ul class="walletText" id=bobConns>
+                                    <li v-for="conn in bobConns">{{conn}}</li>
+                                </ul>
+                                <button type="button" class="collapsible"
+                                    v-on:click="BobWalletCredClick">Credentials</button>
+                                <div id="bobWalletCollapse" class="collapsibleContent">
+                                    <textarea readonly class="collapsibleTextArea" rows="11"
+                                        cols="64">{{bobCredentialsText}}</textarea>
+                                </div>
+                            </span>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="header">
+                    <h1>Aer Lingus</h1>
+                    <img class="headerImage" src="../media/aer_lingus_logo.svg">
+                </div>
+                <hr class="rounded">
+                <div id="ALInviteDiv">
+                    <div class="tooltip tooltipright">
+                        <span class="tooltiptext tooltiptextright">Generate an open invite which can be accepted by
+                            anyone with thelink</span>
+                        <button v-on:click="ALInvite"><span class="tooltipable">Generate Invite</span></button>
+                        <button v-on:click="ALgenerateQR">QR Code</button>
+                    </div>
+                    <span class="statusUpdates">{{alInviteStatus}}</span>
+                    <br><br>
+                    <div id="ALinviteView" class="tooltip tooltiptop">
+                        <span class="tooltiptext tooltiptexttop">View the generated invitation</span>
+                        <button type="button" class="collapsible"><span class="tooltipable">View
+                                Invitation</span></button>
+                        <div class="collapsibleContent">
+                            <textarea readonly class="collapsibleTextArea" rows="11"
+                                cols="64">{{alInviteText}}</textarea>
+                        </div>
+                    </div>
+                    <canvas id="ALcanvas"></canvas>
+                </div>
+                <hr class="rounded">
+                <div id="proofReqDiv">
+                    <h4>Request a Proof</h4>
+                    <p>
+                        <!-- drop down of stored names / matched with connection_ids -->
+                        From:
+                        <select name="userSelect" v-model="proof_req_conn_id">
+                            <option disabled value="" selected="selected">Connected agents...</option>
+                            <option v-for="option in al_conn_options" v-bind:value="option.conn_id">
+                                {{option.name}}
+                            </option>
+                        </select>
+                        <!-- <span>{{proof_req_conn_id}}</span> -->
+                    </p>
+                    Exposing:
+                    <p>
+                        <input type="checkbox" id="fullname_check" v-model="proof_req_fullname_check">
+                        <label for="fullname_check">Full Name</label>
+                    </p>
+                    <p>
+                        <input type="checkbox" id="type_check" v-model="proof_req_type_check">
+                        <label for="type_check">Vaccination Type</label>
+                    </p>
+                    <p>
+                        <input type="checkbox" id="date_check" v-model="proof_req_date_check">
+                        <label for="date_check">Vaccination Date</label>
+                    </p>
+                    <p>
+                        <input type="checkbox" id="centre_check" v-model="proof_req_centre_check">
+                        <label for="centre_check">Vaccination Centre</label>
+                    </p>
+                    <p>
+                    <div class="tooltip tooltipright">
+                        <span class="tooltiptext tooltiptextright">Test, in zero-knowledge, the amount of doses someone
+                            has received.<br>Note no 'equal to' predicate.</span>
+                        <span class="tooltipable">Doses ZKP:</span>
+                    </div>
+                    <input v-model="zkpRadio" type="radio" name="zkpChoose" id="zkpRadioTrue" value='true'>
+                    <label for="zkpRadioTrue">Yes</label>
+
+                    <input v-model="zkpRadio" type="radio" name="zkpChoose" id="zkpRadioFalse" value='false'
+                        checked="true">
+                    <label for="zkpRadioFalse">No</label>
+                    <!-- <span>{{zkpRadio}}</span> -->
+                    </p>
+                    <div v-if="zkpRadio === 'true'" id="zkpOptions">
+                        <p>
+                            Predicate:
+                            <!-- <v-select v-model="proof_req_pred_drop" :options="predicate_options"></v-select> -->
+                            <select v-model="proof_req_pred_drop">
+                                <option v-for="option in predicate_options" v-bind:value="option">
+                                    {{option}}
+                                </option>
+                            </select>
+                        </p>
+                        <p>
+                            Number Doses:
+                            <!-- <v-select v-model="proof_req_doses_drop" :options="dose_options"> -->
+                            <select v-model="proof_req_doses_drop">
+                                <option v-for="option in dose_options" v-bind:value="option">
+                                    {{option}}
+                                </option>
+                            </select>
+                        </p>
+                    </div>
+                    <div class="tooltip tooltipright">
+                        <span class="tooltiptext tooltiptextright">Request a proof revealing the parameters exposed
+                            above and, optionally, requesting a zero knowledge proof of the number of received
+                            doses.</span>
+                        <button v-on:click="HandleProofReq"><span class="tooltipable">Request Proof</span></button>
+                    </div>
+                    <span class="statusUpdates">{{requestProofStatus}}</span>
+                    <br><br>
+                    <div class="tooltip tooltiptop">
+                        <span class="tooltiptext tooltiptexttop">View the request sent to the named connected entity
+                            asking for proof of the above credentials<br>(Behind the scenes the receiving entity sends
+                            back the most recent proof it has, even if they have no credential. The next step determines
+                            whether the proof
+                            is valid)</span>
+                        <button type="button" class="collapsible"><span class="tooltipable">View Proof
+                                Request</span></button>
+                        <div class="collapsibleContent">
+                            <textarea readonly class="collapsibleTextArea" rows="20"
+                                cols="64">{{ALProofReqText}}</textarea>
+                        </div>
+                    </div>
+                    <br><br>
+                    <div class="tooltip tooltipright">
+                        <span class="tooltiptext tooltiptextright">Determine whether the received proof is valid</span>
+                        <button v-on:click="ALVerifyProofButton"><span class="tooltipable">Verify Proof</span></button>
+                    </div>
+                    <span class="statusUpdates">{{alVerifyPrfStatus}}</span>
+
+                    <br><br>
+                    <div class="tooltip tooltiptop">
+                        <span class="tooltiptext tooltiptexttop">View what information has been received and
+                            verified</span>
+                        <button type="button" class="collapsible"><span class="tooltipable">View Proof
+                                Verification</span></button>
+                        <div class="collapsibleContent">
+                            <textarea readonly class="collapsibleTextArea" rows="10"
+                                cols="64">{{ALProofVerificationText}}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <hr class="rounded">
+                <div id="ALWalletDiv">
+                    <div class="tooltip tooltipright">
+                        <span class="tooltiptext tooltiptextright">View the DIDs, Connections and Credentials in a
+                            user's wallet</span>
+                        <button id="show-modal" v-on:click="ShowALModalBtn"><span class="tooltipable">View
+                                Wallet</span></button>
+                    </div>
+                    <modal v-if="showALModal" @close="CloseALModal">
+                        <h3 slot="header">Aer Lingus' Wallet</h3>
+                        <span slot="body">
+                            <h4>Public NYMs</h4>
+                            <ul class="walletText" id="alDIDs">
+                                <li v-for="did in alDIDs">{{did}}</li>
+                            </ul>
+                            <h4>Connections</h4>
+                            <ul class="walletText" id=alConns>
+                                <li v-for="conn in alConns">{{conn}}</li>
+                            </ul>
+                            <button type="button" class="collapsible"
+                                v-on:click="ALWalletCredClick">Credentials</button>
+                            <div id="alWalletCollapse" class="collapsibleContent">
+                                <textarea readonly class="collapsibleTextArea" rows="11"
+                                    cols="64">{{alCredentialsText}}</textarea>
+                            </div>
+                        </span>
+                </div>
+                <!-- <div id="verifyProofDiv">
+
+                </div> -->
+            </div>
+        </div>
+
+
+    </div>
+</body>
+
+<script src="controller.js"></script>
+
+
+</html>
