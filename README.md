@@ -6,6 +6,31 @@ The top level folder holds all the agent files
 The folder `von-network` holds the Ledger provided by the Verifiable Organisations Network
 
 # Instructions
+Docker is required to run this project.
+
+## 1. Start the VON Network
+In the `von-network` folder initially build the docker container using the command `./manage build`
+
+Then start the network with `./manage up`
+
+Stopping the network while keeping the data is done with `./manage stop`
+
+Resetting the network is done with `./manage down`
+
+More info can be found in the von-network README. http://localhost:9000 also shows the state of the ledger
+
+## 2. Start the agents
+With the von-network running (it must have finished setup, otherwise the agents won't be able to find the ledger) head to `/demo`  and start an agent for each actor with `./run_demo alice
+./run_demo bob
+./run_demo hse
+./run_demo aer_lingus`
+
+This then fires up the agents' initialisation protocols. Checking http://localhost:9000 after this shows the DIDs and Credential Defintions that have been written to the ledger.
+
+## 3. Open the Controller web app
+In `/midController/public` open `main.html` and proceed from there 
+
+
 
 
 
