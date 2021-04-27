@@ -46,7 +46,7 @@ In `/midController/public` open `main.html` and proceed from there. This web app
 9. If verified correctly they can then issue her a plane ticket, if not then they do not issue a ticket.
 
 Failing a ZKP
-1. If Alice had only 1 dose of Pfizer and constructed a ZKP trying to satisfy the predicate &ge; 2 verification would fail on Aer Lingus' end.
+1. If Alice had only 1 dose of Pfizer and constructed a ZKP trying to satisfy the predicate &ge; 2 doses, verification would fail on Aer Lingus' end.
 
 Revocation
 1. HSE can revoke credentials it has issued at the bottom of its contorller (the 'Revoke' button).
