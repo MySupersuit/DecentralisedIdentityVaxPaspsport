@@ -1,14 +1,3 @@
-/* TODO
-- Make more visible - less auto accepts?
-    - mainly does Alice want to give proof to Aer Lingus?
-
-- why loads of DIDs? - PAIRWISE DIDs vs Public DIDs
-
-- Make factors persist? - Can stringify object
-
-- Check bob works
-*/
-
 Vue.component("modal", {
     template: "#modal-template"
 });
@@ -32,8 +21,7 @@ var app = new Vue({
         //     <factor>: true/false,
         // }
 
-        // initLoading: true,
-        initLoading: false,
+        initLoading: true,
         loadingModalStatus: [],
         showLoadModal: true,
 
