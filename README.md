@@ -40,7 +40,7 @@ In `/midController/public` open `main.html` and proceed from there. This web app
 3. Aer Lingus generates a connection invite which Alice loads and accepts.
 4. Aer Lingus request a proof of her vaccine intitially exposing just the Vaccination Type.
 5. Alice accepts and sends a proof of her credential exposing the Vaccination Type.
-6. Aer Lingus, seeing which type of vaccine Alice was administered, sends another proof request with a Zero Knowledge Proof determining the minimum number of doses needed. Eg. Pfizer requires >=2 doses needed or J&J requires >=1 doses.
+6. Aer Lingus, seeing which type of vaccine Alice was administered, sends another proof request with a Zero Knowledge Proof determining the minimum number of doses needed. Eg. Pfizer requires $\ge$ 2 doses needed or J&J requires $\ge$ 1 doses.
 7. Alice accepts and sends a Zero-Knowledge Proof of the number of doses.
 8. Aer Lingus receive this proof and verify it.
 9. If verified correctly they can then issue her a plane ticket, if not then they do not issue a ticket.
