@@ -7,6 +7,7 @@ The folder `von-network` holds the Ledger provided by the Verifiable Organisatio
 
 # Instructions
 Docker is required to run this project.
+A Linux environment is also needed. I used Ubuntu 20.04 on the Windows Subsystem for Linux (WSL)
 
 ## 1. Start the VON Network
 In the `von-network` folder initially build the docker container using the command `./manage build`
@@ -33,8 +34,16 @@ This then fires up the agents' initialisation protocols. Checking http://localho
 ## 3. Open the Controller web app
 In `/midController/public` open `main.html` and proceed from there. This web app is ostensibly 4 controllers in one web page for convenience. In a practical scenario these 4 controllers would be used by each actor seperately.
 
-# Walkthrough of web app
-...
+# Basic walkthrough of web app
+1. HSE generates a connection invite which Alice loads and accepts. 
+2. HSE issues a credential to Alice which Alice accepts.
+3. Aer Lingus generates a connection invite which Alice loads and accepts.
+4. Aer Lingus request a proof of her vaccine intitially exposing just the Vaccination Type.
+5. Alice accepts and sends a proof of her credential exposing the Vaccination Type.
+6. Aer Lingus, seeing which type of vaccine Alice was administered, sends another proof request with a Zero Knowledge Proof determining the minimum number of doses needed. Eg. Pfizer requires >=2 doses needed or J&J requires >=1 doses.
+7. Alice accepts and sends a Zero-Knowledge Proof of the number of doses.
+8. Aer Lingus receive this proof and verify it.
+9. If verified correctly they can then issue her a plane ticket, if not then they do not issue a ticket.
 
 # Original Readme: Hyperledger Aries Cloud Agent - Python  <!-- omit in toc -->
 
