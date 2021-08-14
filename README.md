@@ -1,4 +1,4 @@
-# A COVID-19 Vaccine Passport
+# A COVID-19 Vaccine Passport - Computer Science Final Year Project TCD 2021
 The folder `midController` is where my 4 controllers reside
 
 The top level folder holds all the agent files
