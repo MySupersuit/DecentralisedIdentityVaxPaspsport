@@ -29,16 +29,16 @@ With the von-network running (it must have finished setup, otherwise the agents 
 ./run_demo aer_lingus
 ```
 
-This then fires up the agents' initialisation protocols. Checking http://localhost:9000 after this shows the DIDs and Credential Defintions that have been written to the ledger.
+This then fires up the agents' initialisation protocols. Checking http://localhost:9000 after this shows the DIDs and Credential Definitions that have been written to the ledger.
 
 ## 3. Open the Controller web app
-In `/midController/public` open `main.html` and proceed from there. This web app is ostensibly 4 controllers in one web page for convenience. In a practical scenario these 4 controllers would be used by each actor seperately.
+In `/midController/public` open `main.html` and proceed from there. This web app is ostensibly 4 controllers in one web page for convenience. In a practical scenario these 4 controllers would be used by each actor separately.
 
 # Basic walkthrough of web app
 1. HSE generates a connection invite which Alice loads and accepts. 
 2. HSE issues a credential to Alice which Alice accepts.
 3. Aer Lingus generates a connection invite which Alice loads and accepts.
-4. Aer Lingus request a proof of her vaccine intitially exposing just the Vaccination Type.
+4. Aer Lingus request a proof of her vaccine initially exposing just the Vaccination Type.
 5. Alice accepts and sends a proof of her credential exposing the Vaccination Type.
 6. Aer Lingus, seeing which type of vaccine Alice was administered, sends another proof request with a Zero Knowledge Proof (ZKP) determining the minimum number of doses needed. Eg. Pfizer requires &ge; 2 doses needed or J&J requires &ge; 1 doses.
 7. Alice accepts and sends a ZKP of the number of doses.
@@ -49,7 +49,7 @@ Failing a ZKP
 1. If Alice had only 1 dose of Pfizer and constructed a ZKP trying to satisfy the predicate &ge; 2 doses, verification would fail on Aer Lingus' end.
 
 Revocation
-1. HSE can revoke credentials it has issued at the bottom of its contorller (the 'Revoke' button).
+1. HSE can revoke credentials it has issued at the bottom of its controller (the 'Revoke' button).
 2. Revoking Alice's credential would make the verification step fail on Aer Lingus' end.
 
 # Original Readme: Hyperledger Aries Cloud Agent - Python  <!-- omit in toc -->
